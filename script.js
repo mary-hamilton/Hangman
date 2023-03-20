@@ -11,15 +11,22 @@ function appendGuess (param) {
 }
 
 function lifeCounter() {
-    let usedUp =  document.createElement('span');
-    usedUp.textContent = "X";
-    usedLives.appendChild(usedUp);
+    // let usedUp =  document.createElement('span');
+    // usedUp.textContent = "X";
+    usedLives.removeChild(usedLives.lastElementChild);
 }
 function getInput() {
     let userInput = document.getElementById("letter-input").value;
-    appendGuess(userInput);
-    lifeCounter();
+    if (userInput.length === 1) {
+        appendGuess(userInput);
+        // need to change this so lifeCounter doesn't increase if guess is correct
+        lifeCounter();
+    } else {
+        alert("that is not a valid guess! Try again")
+    }
 }
+    
+
 
 button.onclick = getInput;
 
