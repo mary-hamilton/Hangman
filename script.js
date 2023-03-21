@@ -12,7 +12,7 @@ let guessedLetters = [];
 let correctGuesses = [];
 let badGuesses = [];
 let userInput;
-
+//TEST CODE FOR PUSHING
 
 // Getting everything set up
 
