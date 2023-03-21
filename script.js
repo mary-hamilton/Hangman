@@ -152,16 +152,17 @@ function victory() {
 // function to end and reset 
 
 function reset() {
-    
+
+    livesLeft = 10;
     word.replaceChildren();
     userGuesses.replaceChildren();
-    while (usedLives.children.length < 11) {
+    for  (let i = 0; i < livesLeft; i++) {
         let life = document.createElement('span');
         life.textContent = "X";
         life.className = "life";
         usedLives.appendChild(life);
     }
-    livesLeft = 10;
+   
     
     alertArea.textContent = "";
     randomWordGenerator();
