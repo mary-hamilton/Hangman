@@ -1,47 +1,126 @@
 let word = document.getElementById("random-word");
 let userGuesses = document.getElementById("user-guess");
 let usedLives = document.getElementById("used-lives");
-let button = document.getElementById("button");
+let button = document.getElementById("submit-button");
+
+let livesLeft = 10;
+let randomWord = "";
+let splitRandomWord = [];
+let guessedLetters = [];
+let correctGuesses = [];
+let badGuesses = [];
+let userInput;
 
 
-function appendGuess (param) {
-    // need to add a function checking if the guess is correct or not
-    let newLetter = document.createElement('span');
-    newLetter.textContent = `${param}, `;
-    userGuesses.appendChild(newLetter);
+// Getting everything set up
+
+// function for picking random word (out of 2605)
+function randomWordGenerator() {
+    let randomNumber = Math.floor(Math.random() * 2605);
+    randomWord = words[randomNumber - 1];
 }
 
-function lifeCounter() {
-    let life = usedLives.getElementsByClassName("life")[0];
-    // need to add a function checking if the guess is correct or not
-    usedLives.removeChild(life);
+// call the random word function on page load
+
+randomWordGenerator();
+
+// function to split word into array so visibility of each element can be controlled
+
+function splitWord() {
+    splitRandomWord = randomWord.split("");
+    console.log(splitRandomWord)
+}
+//  calling splitWord on page load
+
+splitWord();
+
+
+// function to make splitRandomWord into html elements
+
+function makeLetterElements() {
+
+    for (let i = 0; i < splitRandomWord.length; i++) {
+        let wordLetter = document.createElement('span');
+        wordLetter.textContent = "_"
+        wordLetter.className = "word-letter";
+        wordLetter.style.margin = '5px';
+        word.appendChild(wordLetter);
+    }
 }
 
-// Getting user guess
+// calling makeLetterElements;
+
+makeLetterElements();
+
+// Playing the game
+
+
+// Getting user guess, checking it's only one letter and converting to lowercase
 function getInput() {
-    let userInput = document.getElementById("letter-input").value;
-    if (userInput.length === 1) {
-        appendGuess(userInput);
-        // need to change this so lifeCounter doesn't increase if guess is correct
-        lifeCounter();
+    userInput = document.getElementById("letter-input").value;
+    if (/^[A-Za-z]+$/.test(userInput)) {
+        userInput = userInput.toLowerCase();
+        guessedLetters.push(userInput);
+        checkGuess(userInput);
     } else {
         // do something better than alert!
         alert("that is not a valid guess! Try again")
     }
 }
+// call getInput on button click
 
 button.onclick = getInput;
 
-// function for picking random word (out of 2605)
-function randomWord() {
 
-    let randomNumber = Math.floor(Math.random() * 2605);
-    word.innerText = words[randomNumber - 1];
+
+// function to check if guess is in word 
+function checkGuess(letter) {
+    let flag = false
+    for (let i = 0; i < splitRandomWord.length; i++) {
+        console.log(splitRandomWord[i]);
+        if (letter === splitRandomWord[i]) {
+            flag = true;
+            document.getElementsByClassName("word-letter")[i].textContent = letter;
+        } 
+        
+    }
+    if (flag === false ){
+        badGuesses.push(letter);
+        console.log(badGuesses);
+        appendBadGuess(letter);
+    }
 }
 
-// call the random word function on page load
+// append bad guess and decrease lives
+function appendBadGuess(letter) {
 
-randomWord();
+    let badGuess = document.createElement('span');
+    badGuess.className = "bad-guess";
+    badGuess.textContent = `${letter}, `;
+    console.log(badGuesses.indexOf(letter));
+    userGuesses.appendChild(badGuess);
+    lifeCounter();
+}
+
+
+// function to decrease lives
+function lifeCounter() {
+    let life = usedLives.getElementsByClassName("life")[0];
+    usedLives.removeChild(life);
+    livesLeft --;
+}
+
+// function to check if you've won
+
+// function victory() {
+//    if (correctGuesses.sort() === splitRandomWord.sort()) {
+//        console.log("VICTORY");
+//    }
+// }
+
+
+
+
 
 
 
