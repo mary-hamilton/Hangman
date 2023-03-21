@@ -55,29 +55,47 @@ makeLetterElements();
 // Playing the game
 
 
-// Getting user guess, checking it's only one letter and converting to lowercase
+// Getting user guess, checking it's a letter, converting to lowercase, checking it hasn't been guessed before,
+// clearing input field after use
 function getInput() {
+    
     userInput = document.getElementById("letter-input").value;
-    if (/^[A-Za-z]+$/.test(userInput)) {
-        userInput = userInput.toLowerCase();
-        guessedLetters.push(userInput);
-        checkGuess(userInput);
-    } else {
-        // do something better than alert!
+    
+    if (!/^[A-Za-z]+$/.test(userInput)) {
         alert("that is not a valid guess! Try again")
+    } else {
+        userInput = userInput.toLowerCase();
+        if (duplicate(userInput)) {
+            alert("you have already guessed that letter!")
+        } else {
+            guessedLetters.push(userInput);
+            checkGuess(userInput);
+            victory();
+        }
     }
+    document.getElementById("letter-input").value = "";
 }
 // call getInput on button click
 
 button.onclick = getInput;
 
+// function to stop the same guess twice
+
+function duplicate(letter) {
+    let flag = false;
+    for (let i = 0; i < guessedLetters.length; i++) {
+        if (letter === guessedLetters[i]) {
+            flag = true;
+        }
+    }
+    return flag;
+}
 
 
 // function to check if guess is in word 
 function checkGuess(letter) {
     let flag = false
     for (let i = 0; i < splitRandomWord.length; i++) {
-        console.log(splitRandomWord[i]);
         if (letter === splitRandomWord[i]) {
             flag = true;
             document.getElementsByClassName("word-letter")[i].textContent = letter;
@@ -86,8 +104,9 @@ function checkGuess(letter) {
     }
     if (flag === false ){
         badGuesses.push(letter);
-        console.log(badGuesses);
         appendBadGuess(letter);
+    } else {
+        correctGuesses.push(letter);
     }
 }
 
@@ -97,7 +116,6 @@ function appendBadGuess(letter) {
     let badGuess = document.createElement('span');
     badGuess.className = "bad-guess";
     badGuess.textContent = `${letter}, `;
-    console.log(badGuesses.indexOf(letter));
     userGuesses.appendChild(badGuess);
     lifeCounter();
 }
@@ -112,11 +130,13 @@ function lifeCounter() {
 
 // function to check if you've won
 
-// function victory() {
-//    if (correctGuesses.sort() === splitRandomWord.sort()) {
-//        console.log("VICTORY");
-//    }
-// }
+function victory() {
+    let sortedRandomWord = splitRandomWord.filter((item, index) => splitRandomWord.indexOf(item) === index).sort();
+    let sortedCorrectGuesses = correctGuesses.sort();
+   if (sortedCorrectGuesses.toString() === sortedRandomWord.toString()) {
+       alert("VICTORY!!!");
+   }
+}
 
 
 
