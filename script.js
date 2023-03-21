@@ -1,7 +1,7 @@
 let word = document.getElementById("random-word");
 let userGuesses = document.getElementById("user-guess");
 let usedLives = document.getElementById("used-lives");
-let startButton = document.getElementById("submit-button");
+let startButton = document.getElementById("start-button");
 let resetButton = document.getElementById("reset-button")
 let alertArea = document.getElementById("alert-area")
 
@@ -77,9 +77,8 @@ function startGame() {
     }
     document.getElementById("letter-input").value = "";
     victory();
-    if(!livesLeft) {
-        alertArea.textContent = "You lost! Click reset to play again";
-    }
+    hasLost();
+
     
 }
 // call startGame on button click
@@ -89,13 +88,7 @@ startButton.onclick = startGame;
 // function to stop the same guess twice
 
 function duplicate(letter) {
-    let flag = false;
-    for (let i = 0; i < guessedLetters.length; i++) {
-        if (letter === guessedLetters[i]) {
-            flag = true;
-        }
-    }
-    return flag;
+    return guessedLetters.includes(letter);
 }
 
 
@@ -106,29 +99,29 @@ function checkGuess(letter) {
         if (letter === splitRandomWord[i]) {
             flag = true;
             document.getElementsByClassName("word-letter")[i].textContent = letter;
-        } 
-        
+        }
     }
-    if (flag === false ){
+    flag ? 
+        correctGuesses.push(letter) 
+        : 
         badGuesses.push(letter);
         appendBadGuess(letter);
-    } else {
-        correctGuesses.push(letter);
-    }
+        lifeCounter();
+
 }
 
-// append bad guess and decrease lives
+// append bad guess
 function appendBadGuess(letter) {
 
     let badGuess = document.createElement('span');
     badGuess.className = "bad-guess";
     badGuess.textContent = `${letter}, `;
     userGuesses.appendChild(badGuess);
-    lifeCounter();
+    
 }
 
 
-// function to decrease lives
+// decrease lives
 function lifeCounter() {
     let life = usedLives.getElementsByClassName("life")[0];
     usedLives.removeChild(life);
@@ -140,12 +133,28 @@ function lifeCounter() {
 
 function victory() {
     let sortedRandomWord = splitRandomWord.filter((item, index) => splitRandomWord.indexOf(item) === index).sort();
+    // let sortedRandomWord = splitRandomWord.forEach((a) => {
+    //     if (!sortedRandomWord.includes(a)) {
+    //         sortedRandomWord.push(a);
+    //     }
+    // }
+    // })
     let sortedCorrectGuesses = correctGuesses.sort();
    if (sortedCorrectGuesses.toString() === sortedRandomWord.toString()) {
        alertArea.textContent = "VICTORY!!! Click reset to play again";
-       
+       startButton.disabled = true;
        
    }
+}
+
+// function to see if you've lost
+
+function hasLost() {
+    if (!livesLeft) {
+        alertArea.textContent = "You lost! Click reset to play again";
+        startButton.disabled = true;
+
+    }
 }
 
 
