@@ -1,7 +1,9 @@
 let word = document.getElementById("random-word");
 let userGuesses = document.getElementById("user-guess");
 let usedLives = document.getElementById("used-lives");
-let button = document.getElementById("submit-button");
+let startButton = document.getElementById("submit-button");
+let resetButton = document.getElementById("reset-button")
+let alertArea = document.getElementById("alert-area")
 
 let livesLeft = 10;
 let randomWord = "";
@@ -16,8 +18,8 @@ let userInput;
 
 // function for picking random word (out of 2605)
 function randomWordGenerator() {
-    let randomNumber = Math.floor(Math.random() * 2605);
-    randomWord = words[randomNumber - 1];
+    let randomNumber = Math.floor(Math.random() * words.length);
+    randomWord = words[randomNumber];
 }
 
 // call the random word function on page load
@@ -57,27 +59,32 @@ makeLetterElements();
 
 // Getting user guess, checking it's a letter, converting to lowercase, checking it hasn't been guessed before,
 // clearing input field after use
-function getInput() {
+function startGame() {
     
     userInput = document.getElementById("letter-input").value;
     
     if (!/^[A-Za-z]+$/.test(userInput)) {
-        alert("that is not a valid guess! Try again")
+        alertArea.textContent = "That is not a valid guess! Try again";
     } else {
         userInput = userInput.toLowerCase();
         if (duplicate(userInput)) {
-            alert("you have already guessed that letter!")
+            alertArea.textContent = "You have already guessed that letter!";
         } else {
             guessedLetters.push(userInput);
             checkGuess(userInput);
-            victory();
+            
         }
     }
     document.getElementById("letter-input").value = "";
+    victory();
+    if(!livesLeft) {
+        alertArea.textContent = "You lost! Click reset to play again";
+    }
+    
 }
-// call getInput on button click
+// call startGame on button click
 
-button.onclick = getInput;
+startButton.onclick = startGame;
 
 // function to stop the same guess twice
 
@@ -126,6 +133,7 @@ function lifeCounter() {
     let life = usedLives.getElementsByClassName("life")[0];
     usedLives.removeChild(life);
     livesLeft --;
+    
 }
 
 // function to check if you've won
@@ -134,12 +142,34 @@ function victory() {
     let sortedRandomWord = splitRandomWord.filter((item, index) => splitRandomWord.indexOf(item) === index).sort();
     let sortedCorrectGuesses = correctGuesses.sort();
    if (sortedCorrectGuesses.toString() === sortedRandomWord.toString()) {
-       alert("VICTORY!!!");
+       alertArea.textContent = "VICTORY!!! Click reset to play again";
+       
+       
    }
 }
 
 
+// function to end and reset 
 
+function reset() {
+    
+    word.replaceChildren();
+    userGuesses.replaceChildren();
+    while (usedLives.children.length < 11) {
+        let life = document.createElement('span');
+        life.textContent = "X";
+        life.className = "life";
+        usedLives.appendChild(life);
+    }
+    livesLeft = 10;
+    
+    alertArea.textContent = "";
+    randomWordGenerator();
+    splitWord();
+    makeLetterElements();
+}
+
+resetButton.onclick = reset;
 
 
 
