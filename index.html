@@ -8,30 +8,32 @@
     <title>Document</title>
     <script src="words.js"></script>
     <script defer src="script.js"></script>
+    <link rel="stylesheet" href="style.css"><link>
 </head>
 <body>
-<div id="random-word">
+<div class="page-container">
+<div class="the-word" id="random-word">
 </div>
-
+<div class="guessing-area">
 <label for="letter-input">Try a letter!</label>
 <input type="text" id="letter-input" name="letter-input" maxlength="1">
 <button id="start-button">Submit</button>
+</div>
 <div>
 <span>Incorrect Guesses:</span>
 <div id="user-guess">
 
 </div>
 </div>
-<div>
+<div class="lives">
     <span>Lives left:</span>
-<div id="used-lives">
-
-
-
+<div class="used-lives" id="used-lives">
 </div>
 </div>
+    <div class="bottom-area">
 <p id="alert-area"></p>
 <button id="reset-button">Reset</button>
-
+</div>
+</div>
 </body>
 </html>

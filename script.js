@@ -5,6 +5,7 @@ let startButton = document.getElementById("start-button");
 let resetButton = document.getElementById("reset-button")
 let alertArea = document.getElementById("alert-area")
 
+let livesLeft;
 let randomWord = "";
 let splitRandomWord = [];
 let guessedLetters = [];
@@ -21,6 +22,13 @@ function randomWordGenerator() {
     randomWord = words[randomNumber];
 }
 
+// // function to select random words that include cat
+// function catRandomWords () {
+//     let catRandomWord = words.filter(a => a.includes("cat") || a.includes("kit"));
+//     console.log(catRandomWord);
+// }
+//
+// catRandomWords();
 
 // function to split word into array so visibility of each element can be controlled
 
@@ -30,7 +38,7 @@ function splitWord() {
 }
 
 
-// function to make splitRandomWord into html elements
+// function to make splitRandomWord into masked html elements
 
 function makeLetterElements() {
 
@@ -81,13 +89,22 @@ startButton.onclick = startGame;
 function checkGuess(letter) {
     let flag = false
     for (let i = 0; i < splitRandomWord.length; i++) {
+        if (letter === splitRandomWord[0]) {
+            document.getElementsByClassName("word-letter")[0].textContent = letter.toUpperCase();
+        }
         if (letter === splitRandomWord[i]) {
             flag = true;
             document.getElementsByClassName("word-letter")[i].textContent = letter;
         }
     }
-    flag ? correctGuesses.push(letter) : badGuesses.push(letter); appendBadGuess(letter); lifeCounter();
-
+    if (flag) {
+        correctGuesses.push(letter)
+    } else {
+        badGuesses.push(letter);
+        appendBadGuess(letter);
+        lifeCounter();
+    }
+    alertArea.textContent = "";
 }
 
 // append bad guess
@@ -113,24 +130,35 @@ function lifeCounter() {
 // function to check if you've won
 
 function victory() {
-    // let sortedRandomWord = splitRandomWord.filter((item, index) => splitRandomWord.indexOf(item) === index).sort();
-
-
+    let sortedRandomWord = splitRandomWord.filter((item, index) => splitRandomWord.indexOf(item) === index).sort();
     let sortedCorrectGuesses = correctGuesses.sort();
    if (sortedCorrectGuesses.toString() === sortedRandomWord.toString()) {
-       alertArea.textContent = "VICTORY!!! Click reset to play again";
+       alertArea.textContent = "VICTORY!!! Click reset to play again.";
        startButton.disabled = true;
        
    }
 }
 
-// function to see if you've lost
+// function to check if you've lost
 
 function hasLost() {
     if (!livesLeft) {
-        alertArea.textContent = "You lost! Click reset to play again";
+        alertArea.textContent = "You lost! Click reset to play again.";
         startButton.disabled = true;
 
+    }
+}
+
+//  function to create and replace lives
+function resetLives () {
+
+    for (let i = 0; i < livesLeft; i++) {
+        let life = document.createElement('img');
+        life.setAttribute( "src" , "https://upload.wikimedia.org/wikipedia/commons/6/60/Cat_silhouette.svg");
+        life.style.height = "40px";
+        life.style.padding = "5px";
+        life.className = "life";
+        usedLives.appendChild(life);
     }
 }
 
@@ -139,21 +167,15 @@ function hasLost() {
 
 function reset() {
 
-    livesLeft = 10;
     word.replaceChildren();
     userGuesses.replaceChildren();
     usedLives.replaceChildren();
-    for  (let i = 0; i <= livesLeft; i++) {
-        let life = document.createElement('span');
-        life.textContent = "X";
-        life.className = "life";
-        usedLives.appendChild(life);
-    }
-    
-    alertArea.textContent = "Let's play hangman! Try a letter to start.";
+    livesLeft = 9;
+    resetLives();
     randomWordGenerator();
     splitWord();
     makeLetterElements();
+    alertArea.textContent = "Let's play hangman! Try a letter to start.";
 }
 
 resetButton.onclick = reset;

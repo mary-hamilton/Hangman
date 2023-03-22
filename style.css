@@ -1,0 +1,43 @@
+html {
+    font-family: sans-serif;
+}
+.page-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.the-word {
+    display: flex;
+    font-size: 50px;
+    justify-content: center;
+}
+
+button {
+    width: 80px;
+    height: 30px;
+    border-radius: 20px;
+
+}
+
+.guessing-area {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    margin: 30px;
+}
+
+.bottom-area {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.used-lives {
+    display: flex;
+    justify-content: center;
+    margin: 30px;
+}
+
+
