@@ -14,6 +14,10 @@ let badGuesses = [];
 let userInput;
 
 
+// Calling reset on page load to begin the game
+
+reset();
+
 // Getting everything set up
 
 // function for picking random word (out of 2605)
@@ -27,7 +31,6 @@ function randomWordGenerator() {
 //     let catRandomWord = words.filter(a => a.includes("cat") || a.includes("kit"));
 //     console.log(catRandomWord);
 // }
-//
 // catRandomWords();
 
 // function to split word into array so visibility of each element can be controlled
@@ -51,9 +54,6 @@ function makeLetterElements() {
     }
 }
 
-// Calling reset on page load to begin the game
-
-reset();
 
 // Playing the game
 
@@ -65,10 +65,12 @@ function startGame() {
     userInput = document.getElementById("letter-input").value;
     
     if (!/^[A-Za-z]+$/.test(userInput)) {
+        alertArea.style.color = "red";
         alertArea.textContent = "That is not a valid guess! Try again";
     } else {
         userInput = userInput.toLowerCase();
         if (guessedLetters.includes(userInput)) {
+            alertArea.style.color = "red";
             alertArea.textContent = "You have already guessed that letter!"
         } else {
             guessedLetters.push(userInput);
@@ -78,6 +80,7 @@ function startGame() {
     document.getElementById("letter-input").value = "";
     victory();
     hasLost();
+    document.getElementById("letter-input").focus();
 }
 // call startGame on button click
 
@@ -105,6 +108,7 @@ function checkGuess(letter) {
         lifeCounter();
     }
     alertArea.textContent = "";
+    
 }
 
 // append bad guess
@@ -112,8 +116,7 @@ function appendBadGuess(letter) {
 
     let badGuess = document.createElement('span');
     badGuess.className = "bad-guess";
-    badGuess.style.padding = '5px';
-    badGuess.textContent = letter;
+    badGuess.textContent = letter.toUpperCase();
     userGuesses.appendChild(badGuess);
     
 }
@@ -133,6 +136,8 @@ function victory() {
     let sortedRandomWord = splitRandomWord.filter((item, index) => splitRandomWord.indexOf(item) === index).sort();
     let sortedCorrectGuesses = correctGuesses.sort();
    if (sortedCorrectGuesses.toString() === sortedRandomWord.toString()) {
+       alertArea.style.color = "green";
+       alertArea.style.fontSize = "50px"
        alertArea.textContent = "VICTORY!!! Click reset to play again.";
        startButton.disabled = true;
        
@@ -143,7 +148,7 @@ function victory() {
 
 function hasLost() {
     if (!livesLeft) {
-        alertArea.textContent = "You lost! Click reset to play again.";
+        alertArea.textContent = `You lost! The word was "${randomWord}". Click reset to play again.`;
         startButton.disabled = true;
 
     }
@@ -155,8 +160,6 @@ function resetLives () {
     for (let i = 0; i < livesLeft; i++) {
         let life = document.createElement('img');
         life.setAttribute( "src" , "https://upload.wikimedia.org/wikipedia/commons/6/60/Cat_silhouette.svg");
-        life.style.height = "40px";
-        life.style.padding = "5px";
         life.className = "life";
         usedLives.appendChild(life);
     }
@@ -175,6 +178,7 @@ function reset() {
     randomWordGenerator();
     splitWord();
     makeLetterElements();
+    startButton.disabled = false;
     alertArea.textContent = "Let's play hangman! Try a letter to start.";
 }
 
