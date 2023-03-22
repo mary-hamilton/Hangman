@@ -5,7 +5,6 @@ let startButton = document.getElementById("start-button");
 let resetButton = document.getElementById("reset-button")
 let alertArea = document.getElementById("alert-area")
 
-let livesLeft = 10;
 let randomWord = "";
 let splitRandomWord = [];
 let guessedLetters = [];
@@ -22,9 +21,6 @@ function randomWordGenerator() {
     randomWord = words[randomNumber];
 }
 
-// call the random word function on page load
-
-randomWordGenerator();
 
 // function to split word into array so visibility of each element can be controlled
 
@@ -32,9 +28,6 @@ function splitWord() {
     splitRandomWord = randomWord.split("");
     console.log(splitRandomWord)
 }
-//  calling splitWord on page load
-
-splitWord();
 
 
 // function to make splitRandomWord into html elements
@@ -50,9 +43,9 @@ function makeLetterElements() {
     }
 }
 
-// calling makeLetterElements;
+// Calling reset on page load to begin the game
 
-makeLetterElements();
+reset();
 
 // Playing the game
 
@@ -67,29 +60,21 @@ function startGame() {
         alertArea.textContent = "That is not a valid guess! Try again";
     } else {
         userInput = userInput.toLowerCase();
-        if (duplicate(userInput)) {
-            alertArea.textContent = "You have already guessed that letter!";
+        if (guessedLetters.includes(userInput)) {
+            alertArea.textContent = "You have already guessed that letter!"
         } else {
             guessedLetters.push(userInput);
             checkGuess(userInput);
-            
         }
     }
     document.getElementById("letter-input").value = "";
     victory();
     hasLost();
-
-    
 }
 // call startGame on button click
 
 startButton.onclick = startGame;
 
-// function to stop the same guess twice
-
-function duplicate(letter) {
-    return guessedLetters.includes(letter);
-}
 
 
 // function to check if guess is in word 
@@ -101,12 +86,7 @@ function checkGuess(letter) {
             document.getElementsByClassName("word-letter")[i].textContent = letter;
         }
     }
-    flag ? 
-        correctGuesses.push(letter) 
-        : 
-        badGuesses.push(letter);
-        appendBadGuess(letter);
-        lifeCounter();
+    flag ? correctGuesses.push(letter) : badGuesses.push(letter); appendBadGuess(letter); lifeCounter();
 
 }
 
@@ -115,7 +95,8 @@ function appendBadGuess(letter) {
 
     let badGuess = document.createElement('span');
     badGuess.className = "bad-guess";
-    badGuess.textContent = `${letter}, `;
+    badGuess.style.padding = '5px';
+    badGuess.textContent = letter;
     userGuesses.appendChild(badGuess);
     
 }
@@ -132,13 +113,9 @@ function lifeCounter() {
 // function to check if you've won
 
 function victory() {
-    let sortedRandomWord = splitRandomWord.filter((item, index) => splitRandomWord.indexOf(item) === index).sort();
-    // let sortedRandomWord = splitRandomWord.forEach((a) => {
-    //     if (!sortedRandomWord.includes(a)) {
-    //         sortedRandomWord.push(a);
-    //     }
-    // }
-    // })
+    // let sortedRandomWord = splitRandomWord.filter((item, index) => splitRandomWord.indexOf(item) === index).sort();
+
+
     let sortedCorrectGuesses = correctGuesses.sort();
    if (sortedCorrectGuesses.toString() === sortedRandomWord.toString()) {
        alertArea.textContent = "VICTORY!!! Click reset to play again";
@@ -165,15 +142,15 @@ function reset() {
     livesLeft = 10;
     word.replaceChildren();
     userGuesses.replaceChildren();
-    for  (let i = 0; i < livesLeft; i++) {
+    usedLives.replaceChildren();
+    for  (let i = 0; i <= livesLeft; i++) {
         let life = document.createElement('span');
         life.textContent = "X";
         life.className = "life";
         usedLives.appendChild(life);
     }
-   
     
-    alertArea.textContent = "";
+    alertArea.textContent = "Let's play hangman! Try a letter to start.";
     randomWordGenerator();
     splitWord();
     makeLetterElements();
